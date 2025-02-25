@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# png_to_bmp.py - covert a PNG to a 16-color grayscale BMP.
-# No resizing or color processing is done here.
+# png_to_bmp.py - send a PNG to the Waveshare 10.3 inch display.
 # It is assumed the PNG is already in grayscale (of whatever bit depth) and the right size.
 # Garrett Birkel
 # Version 0.1
@@ -28,35 +27,25 @@
 # Copyright (c) 2025 Garrett Birkel
 
 import argparse, os, re, sys
-from PIL import Image
-
-
-def png_to_bmp(verbose=False, input_file=None, output_file=None):
-    # Open the input image
-    img = Image.open(input_file)
-
-    # Convert to greyscale
-    img.convert('L')
-
-    # Reduce the number of colors to 16
-    img = img.quantize(colors=16, method=Image.FASTOCTREE)
-    
-    # Save the image as BMP
-    img.save(output_file, format='BMP')
+import subprocess
+from PNG_to_BMP.png_to_bmp import png_to_bmp
 
 
 if __name__ == "__main__":
-    args = argparse.ArgumentParser(description="Convert a PNG to a BMP")
+    args = argparse.ArgumentParser(description="Send a PNG to the Waveshare display")
     args.add_argument("--quiet", "-q", action='store_false', dest='verbose',
                       help="reduce log output")
     args.add_argument('--in', type=argparse.FileType('rb'), default=sys.stdin, dest='input_file',
                       help='Input PNG file', required=True)
-    args.add_argument('--out', type=argparse.FileType('wb'), default=sys.stdout, dest='output_file',
-                      help='Output BMP file', required=True)
     args = args.parse_args()
 
     png_to_bmp(
         verbose=args.verbose,
         input_file=args.input_file,
-        output_file=args.output_file
+        output_file="to_display.bmp"
     )
+
+    display_command = "./IT8951_Utility/it8951utility -1.23 1 to_display.bmp"
+    output = subprocess.check_output(display_command, shell=True)
+    if args.verbose:
+        print(output)

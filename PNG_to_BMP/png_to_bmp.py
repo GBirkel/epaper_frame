@@ -3,7 +3,7 @@
 #
 # png_to_bmp.py - covert a PNG to a 16-color grayscale BMP.
 # No resizing or color processing is done here.
-# It is assumed the PNG is already in grayscale and the right size.
+# It is assumed the PNG is already in grayscale (of whatever bit depth) and the right size.
 # Garrett Birkel
 # Version 0.1
 #

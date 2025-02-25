@@ -31,6 +31,20 @@ import subprocess
 from PNG_to_BMP.png_to_bmp import png_to_bmp
 
 
+def png_to_display(verbose=False, input_file=None):
+
+    png_to_bmp(
+        verbose=verbose,
+        input_file=input_file,
+        output_file="to_display.bmp"
+    )
+
+    display_command = "./IT8951_Utility/it8951utility -1.23 1 to_display.bmp"
+    output = subprocess.check_call(display_command, shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
+    if args.verbose:
+        print(output)
+
+
 if __name__ == "__main__":
     args = argparse.ArgumentParser(description="Send a PNG to the Waveshare display")
     args.add_argument("--quiet", "-q", action='store_false', dest='verbose',
@@ -39,13 +53,7 @@ if __name__ == "__main__":
                       help='Input PNG file', required=True)
     args = args.parse_args()
 
-    png_to_bmp(
+    png_to_display(
         verbose=args.verbose,
         input_file=args.input_file,
-        output_file="to_display.bmp"
     )
-
-    display_command = "./IT8951_Utility/it8951utility -1.23 1 to_display.bmp"
-    output = subprocess.check_output(display_command, shell=True)
-    if args.verbose:
-        print(output)

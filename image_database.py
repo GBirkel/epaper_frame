@@ -103,7 +103,7 @@ def create_tables_if_missing(conn, verbose):
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS status (
-            last_sync TEXT,
+            last_sync REAL,
             last_display REAL
         )""")
 
@@ -155,15 +155,23 @@ def get_status_or_defaults(cur, last_sync, last_display):
     :param last_sync: default last_sync value
     :param last_display: default last_display value
     """
-    cur.execute("SELECT last_sync, lastmaxcommentid FROM status")
+    cur.execute("SELECT last_sync, last_display FROM status")
     row = cur.fetchone()
     if not row:
-        cur.execute("INSERT INTO status (last_sync, lastmaxcommentid) VALUES (?, ?)", (last_sync, last_display))
+        cur.execute("INSERT INTO status (last_sync, last_display) VALUES (?, ?)", (last_sync, last_display))
     else:
         last_sync = row[0]
         last_display = row[1]
     status = {"last_sync": last_sync, "last_display": last_display}
     return status
+
+
+def set_status(cur, status):
+    """ set values in the current status record
+    :param cur: database cursor
+    :param status: sync status record
+    """
+    cur.execute("UPDATE status SET last_sync = ?, last_display = ?", (status['last_sync'], status['last_display']))
 
 
 def get_or_insert_image_group(cur, verbose, name):
@@ -322,7 +330,7 @@ def report_image_as_displayed(cur, verbose, image_id):
         "id": image_id,
         "last_display": current_date
     }
-    cur.execute("UPDATE images SET last_display = :last_display WHERE id = :id", data)
+    cur.execute("UPDATE images SET last_display = :last_display, display_count = display_count+1 WHERE id = :id", data)
     cur.execute("INSERT INTO image_display_history (image_id, display_time) VALUES (?, ?)", (image_id, current_date))
 
 

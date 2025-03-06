@@ -34,47 +34,6 @@ from xml.sax import saxutils
 from builtins import str
 
 
-# Subclass of tzinfo swiped mostly from dateutil
-class fancytzoffset(tzinfo):
-    def __init__(self, name, offset):
-        self._name = name
-        self._offset = timedelta(seconds=offset)
-    def utcoffset(self, dt):
-        return self._offset
-    def dst(self, dt):
-        return timedelta(0)
-    def tzname(self, dt):
-        return self._name
-    def __eq__(self, other):
-        return (isinstance(other, fancytzoffset) and self._offset == other._offset)
-    def __ne__(self, other):
-        return not self.__eq__(other)
-    def __repr__(self):
-        return "%s(%s, %s)" % (self.__class__.__name__,
-                               repr(self._name),
-                               self._offset.days*86400+self._offset.seconds)
-    __reduce__ = object.__reduce__
-
-
-# Variant tzinfo subclass for UTC
-class fancytzutc(tzinfo):
-    def utcoffset(self, dt):
-        return timedelta(0)
-    def dst(self, dt):
-        return timedelta(0)
-    def tzname(self, dt):
-        return "UTC"
-    def __eq__(self, other):
-        return (isinstance(other, fancytzutc) or
-                (isinstance(other, fancytzoffset) and other._offset == timedelta(0)))
-    def __ne__(self, other):
-        return not self.__eq__(other)
-    def __repr__(self):
-        return "%s()" % self.__class__.__name__
-    __reduce__ = object.__reduce__
-
-
-
 def connect_to_local_db(db_file, verbose):
     """ create a database connection to the SQLite database
         specified by the db_file

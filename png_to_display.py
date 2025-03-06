@@ -36,10 +36,10 @@ def png_to_display(verbose=False, input_file=None):
     png_to_bmp(
         verbose=verbose,
         input_file=input_file,
-        output_file="to_display.bmp"
+        output_file="/var/tmp/to_display.bmp"
     )
 
-    display_command = "./IT8951_Utility/it8951utility -1.23 1 to_display.bmp"
+    display_command = "./IT8951_Utility/it8951utility -1.23 1 /var/tmp/to_display.bmp"
     output = subprocess.check_call(display_command, shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
     if args.verbose:
         print(output)

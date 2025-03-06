@@ -29,9 +29,15 @@
 import argparse, os, re, sys
 import subprocess
 from PNG_to_BMP.png_to_bmp import png_to_bmp
+from common_utils import *
 
 
 def png_to_display(verbose=False, input_file=None):
+
+    config = read_config()
+    if config is None:
+        print('Error reading your config.xml file!')
+        sys.exit(2)
 
     png_to_bmp(
         verbose=verbose,
@@ -39,9 +45,10 @@ def png_to_display(verbose=False, input_file=None):
         output_file="/var/tmp/to_display.bmp"
     )
 
-    display_command = "./IT8951_Utility/it8951utility -1.23 1 /var/tmp/to_display.bmp"
+    command_path = os.path.join( config['installpath'], "IT8951_Utility/it8951utility" )
+    display_command = command_path + " -1.23 1 /var/tmp/to_display.bmp"
     output = subprocess.check_call(display_command, shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
-    if args.verbose:
+    if verbose:
         print(output)
 
 

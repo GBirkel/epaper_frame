@@ -28,20 +28,17 @@
 
 import argparse, os, re, sys
 import subprocess
+from common_utils import *
 from image_database import *
 
 
-image_library_path = "/home/garote/Pictures/frame/"
-image_database_pathname = "/home/garote/Pictures/frame/images.db"
-
-
-def png_inventory(verbose=False, library_path=None):
+def png_inventory(verbose=False, library_path=None, database_path=None):
 
     conn = None
     cur = None
 
     # create a database connection
-    conn = connect_to_local_db(image_database_pathname, verbose)
+    conn = connect_to_local_db(database_path, verbose)
     if not conn:
         print("Database could not be opened")
         os._exit(os.EX_IOERR)
@@ -56,6 +53,7 @@ def png_inventory(verbose=False, library_path=None):
                 get_or_insert_image_group(cur, verbose, dirname)
 
     groups = get_image_group_dictionaries(cur, verbose)
+    new_images = 0
 
     for group_name in groups['name_to_id']:
         print('Group: %s (%s)' % (group_name, groups['name_to_id'][group_name]))
@@ -80,24 +78,32 @@ def png_inventory(verbose=False, library_path=None):
                             'creation_time': None,
                             'removed': False
                         }
-                        insert_or_update_image(cur, verbose, one_record)
+                        inserted = insert_or_update_image(cur, verbose, one_record)
+                        if inserted:
+                            new_images += 1
 
     images = get_all_images(cur, verbose)
 
-    print(len(images))
+    print("%s images total, %s new as of this scan." % (len(images), new_images))
 
     finish_with_database(conn, cur)
 
 
 if __name__ == "__main__":
+    config = read_config()
+    if config is None:
+        print('Error reading your config.xml file!')
+        sys.exit(2)
+
     args = argparse.ArgumentParser(description="Make an inventory of PNG files in the image library")
     args.add_argument("--quiet", "-q", action='store_false', dest='verbose',
                       help="reduce log output")
-    args.add_argument('--path', type=str, default=image_library_path, dest='library_path',
+    args.add_argument('--path', type=str, default=config['library'], dest='library_path',
                       help='Path to library', required=False)
     args = args.parse_args()
 
     png_inventory(
         verbose=args.verbose,
         library_path=args.library_path,
+        database_path=config['database']
     )

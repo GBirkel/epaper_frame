@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<epaper>
+    <installpath>/home/garote/Documents/epaper_frame/</installpath>
+    <library>/home/garote/Pictures/frame/</library>
+    <database>/home/garote/Documents/epaper_frame/images.db</database>
+</epaper>

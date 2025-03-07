@@ -26,15 +26,34 @@
 #
 # Copyright (c) 2025 Garrett Birkel
 
+# Set up the service like so:
+# sudo ln -s ~/Documents/epaper_frame/cycle_image.service /etc/systemd/system/
+# sudo systemctl enable cycle_image.service
+
 import argparse, os, re, sys
 import subprocess
-from png_to_display import png_to_display
+from send_png_to_display import send_png_to_display
 from datetime import *
 from common_utils import *
 from image_database import *
+from pisugar_battery import PiSugarBattery
 
 
 def cycle_image(verbose=False, specific_id=None):
+
+    # Instantiate the battery reader and do a first measurement
+    piSugarBattery = PiSugarBattery()
+    battery_charging_status = piSugarBattery.charging_status()
+    if battery_charging_status is not None:
+        initial_reading = piSugarBattery.refine_capacity()
+        if verbose:
+            print("PiSugar 3 battery initial reading: %2i%%." % (initial_reading))
+
+    real_time_clock = piSugarBattery.get_real_time_clock()
+    if real_time_clock is None:
+        print("Error reading real time clock.")
+    else:
+        print("PiSugar 3 clock time: %s" % (real_time_clock.isoformat()))
 
     config = read_config()
     if config is None:
@@ -69,9 +88,17 @@ def cycle_image(verbose=False, specific_id=None):
         else:
             last_display_datetime = datetime.utcfromtimestamp(chosen_image['last_display'])
             print("Display count %s, last displayed %s." % (chosen_image['display_count'], last_display_datetime))
-        
+
     image_path = os.path.join(config['library'], chosen_image['group_name'], chosen_image['filename'])
-    png_to_display(verbose, image_path)
+
+    message = None
+    if battery_charging_status is not None:
+        capacity = piSugarBattery.refine_capacity()
+        message = "%2i%%" % capacity
+        if verbose:
+            print("PiSugar 3 battery second reading: %2i%%." % (capacity))
+
+    send_png_to_display(verbose, image_path, message)
     report_image_as_displayed(cur, verbose, chosen_image['id'])
 
     current_date = calendar.timegm(datetime.utcnow().utctimetuple())
@@ -79,6 +106,20 @@ def cycle_image(verbose=False, specific_id=None):
     set_status(cur, status)
 
     finish_with_database(conn, cur)
+
+    if battery_charging_status == True:
+        if verbose:
+            print("PiSugar 3 battery is charging.  Will remain powered on.")
+    else:
+        if verbose:
+            print("On battery power.  Will power down automatically.")
+
+        if piSugarBattery.set_alarm_for_seconds_from_now(180) == False:
+            print("Failed to set new wakeup time in PiSugar 3!")
+
+#    output = subprocess.check_call("sudo shutdown -P now", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
+#    if verbose:
+#        print(output)
 
 
 if __name__ == "__main__":

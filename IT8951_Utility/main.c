@@ -32,6 +32,10 @@ IT8951_Dev_Info Dev_Info = {0, 0};
 UWORD Panel_Width;
 UWORD Panel_Height;
 UDOUBLE Init_Target_Memory_Addr;
+
+bool display_message = false;
+char *message_ptr;
+
 int epd_mode = 0;	//0: no rotate, no mirror
 					//1: no rotate, horizontal mirror, for 10.3inch
 					//2: no totate, horizontal mirror, for 5.17inch
@@ -59,68 +63,6 @@ static void Epd_Mode(int mode)
 		Paint_SetRotate(ROTATE_0);
 		Paint_SetMirroring(MIRROR_NONE);
 	}
-}
-
-
-UBYTE Display_BMP(UWORD Panel_Width, UWORD Panel_Height, UDOUBLE Init_Target_Memory_Addr, UBYTE BitsPerPixel, char *Pathname)
-{
-    UWORD WIDTH;
-
-    if(Four_Byte_Align == true){
-        WIDTH  = Panel_Width - (Panel_Width % 32);
-    }else{
-        WIDTH = Panel_Width;
-    }
-    UWORD HEIGHT = Panel_Height;
-
-    UDOUBLE Imagesize;
-
-    Imagesize = ((WIDTH * BitsPerPixel % 8 == 0)? (WIDTH * BitsPerPixel / 8 ): (WIDTH * BitsPerPixel / 8 + 1)) * HEIGHT;
-    if((Refresh_Frame_Buf = (UBYTE *)malloc(Imagesize)) == NULL) {
-        Debug("Failed to apply for framebuffer memory...\r\n");
-        return -1;
-    }
-
-    Paint_NewImage(Refresh_Frame_Buf, WIDTH, HEIGHT, 0, BLACK);
-    Paint_SelectImage(Refresh_Frame_Buf);
-	Epd_Mode(epd_mode);
-    Paint_SetBitsPerPixel(BitsPerPixel);
-    Paint_Clear(WHITE);
-
-	GUI_ReadBmp(Pathname, 0, 0);
-
-    switch(BitsPerPixel){
-        case BitsPerPixel_8:{
-//            Paint_DrawString_EN(10, 10, "8 bits per pixel 16 grayscale", &Font24, 0xF0, 0x00);
-            EPD_IT8951_8bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr);
-            break;
-        }
-        case BitsPerPixel_4:{
-//			Paint_DrawString_EN(10, 10, "4 bits per pixel 16 grayscale", &Font24, 0xF0, 0x00);
-            EPD_IT8951_4bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
-            break;
-        }
-        case BitsPerPixel_2:{
-//            Paint_DrawString_EN(10, 10, "2 bits per pixel 4 grayscale", &Font24, 0xC0, 0x00);
-            EPD_IT8951_2bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
-            break;
-        }
-        case BitsPerPixel_1:{
-//            Paint_DrawString_EN(10, 10, "1 bit per pixel 2 grayscale", &Font24, 0x80, 0x00);
-            EPD_IT8951_1bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, A2_Mode, Init_Target_Memory_Addr,false);
-            break;
-        }
-    }
-
-    if(Refresh_Frame_Buf != NULL){
-        free(Refresh_Frame_Buf);
-        Refresh_Frame_Buf = NULL;
-    }
-
-    // (Brought this down to 2 seconds from 5 after testing)
-    DEV_Delay_ms(2000);
-
-    return 0;
 }
 
 
@@ -165,21 +107,26 @@ int main(int argc, char *argv[])
     //Exception handling:ctrl + c
     signal(SIGINT, Handler);
 
-    if (argc < 2){
+    if (argc < 2) {
         Debug("Please input VCOM value on FPC cable!\r\n");
         Debug("Example: sudo ./epd -2.51\r\n");
         exit(1);
     }
-	if (argc < 3){
+	if (argc < 3) {
 		Debug("Please input e-Paper display mode!\r\n");
 		Debug("Example: sudo ./epd -2.51 0 or sudo ./epd -2.51 1\r\n");
 		Debug("10.3 inch glass panel is mode 1, else is mode 0\r\n");
 		Debug("If you don't know what to type in just type 0\r\n");
 		exit(1);
     }
-	if (argc < 4){
+	if (argc < 4) {
 		Debug("Please provide a path to a BMP image!\r\n");
 		exit(1);
+    }
+
+	if (argc == 5) {
+        display_message = true;
+        message_ptr = argv[4];
     }
 
     //Init the BCM2835 Device
@@ -224,7 +171,71 @@ int main(int argc, char *argv[])
     Debug("A2 Mode:%d\r\n", A2_Mode);
 
 	EPD_IT8951_Clear_Refresh(Dev_Info, Init_Target_Memory_Addr, GC16_Mode);
-    Display_BMP(Panel_Width, Panel_Height, Init_Target_Memory_Addr, BitsPerPixel_4, argv[3]);
+
+    // Begin display BMP operation
+
+    UBYTE BitsPerPixel = BitsPerPixel_4;
+    char *Pathname = argv[3];
+
+    UWORD WIDTH;
+
+    if(Four_Byte_Align == true){
+        WIDTH  = Panel_Width - (Panel_Width % 32);
+    }else{
+        WIDTH = Panel_Width;
+    }
+    UWORD HEIGHT = Panel_Height;
+
+    UDOUBLE Imagesize;
+
+    Imagesize = ((WIDTH * BitsPerPixel % 8 == 0)? (WIDTH * BitsPerPixel / 8 ): (WIDTH * BitsPerPixel / 8 + 1)) * HEIGHT;
+    if((Refresh_Frame_Buf = (UBYTE *)malloc(Imagesize)) == NULL) {
+        Debug("Failed to apply for framebuffer memory...\r\n");
+        return -1;
+    }
+
+    Paint_NewImage(Refresh_Frame_Buf, WIDTH, HEIGHT, 0, BLACK);
+    Paint_SelectImage(Refresh_Frame_Buf);
+	Epd_Mode(epd_mode);
+    Paint_SetBitsPerPixel(BitsPerPixel);
+    Paint_Clear(WHITE);
+
+	GUI_ReadBmp(Pathname, 0, 0);
+
+    switch(BitsPerPixel){
+        case BitsPerPixel_8:{
+//            Paint_DrawString_EN(10, 10, "8 bits per pixel 16 grayscale", &Font24, 0xF0, 0x00);
+            EPD_IT8951_8bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr);
+            break;
+        }
+        case BitsPerPixel_4:{
+            if (display_message) {
+    			Paint_DrawString_EN(10, 10, message_ptr, &Font24, 0xF0, 0x00);
+            }
+            EPD_IT8951_4bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
+            break;
+        }
+        case BitsPerPixel_2:{
+//            Paint_DrawString_EN(10, 10, "2 bits per pixel 4 grayscale", &Font24, 0xC0, 0x00);
+            EPD_IT8951_2bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, false, Init_Target_Memory_Addr,false);
+            break;
+        }
+        case BitsPerPixel_1:{
+//            Paint_DrawString_EN(10, 10, "1 bit per pixel 2 grayscale", &Font24, 0x80, 0x00);
+            EPD_IT8951_1bp_Refresh(Refresh_Frame_Buf, 0, 0, WIDTH,  HEIGHT, A2_Mode, Init_Target_Memory_Addr,false);
+            break;
+        }
+    }
+
+    if(Refresh_Frame_Buf != NULL){
+        free(Refresh_Frame_Buf);
+        Refresh_Frame_Buf = NULL;
+    }
+
+    // (Brought this down to 2 seconds from 5 after testing)
+    DEV_Delay_ms(2000);
+
+    // Done with display BMP operation
 
     //EPD_IT8951_Standby();
     EPD_IT8951_Sleep();

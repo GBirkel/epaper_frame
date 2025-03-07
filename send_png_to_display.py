@@ -32,7 +32,7 @@ from PNG_to_BMP.png_to_bmp import png_to_bmp
 from common_utils import *
 
 
-def png_to_display(verbose=False, input_file=None):
+def send_png_to_display(verbose=False, input_file=None, message=None):
 
     config = read_config()
     if config is None:
@@ -47,6 +47,12 @@ def png_to_display(verbose=False, input_file=None):
 
     command_path = os.path.join( config['installpath'], "IT8951_Utility/it8951utility" )
     display_command = command_path + " -1.23 1 /var/tmp/to_display.bmp"
+    if message is not None:
+        message = message[0:80]
+        message = re.sub(r'"', "'", message)
+        message = re.sub(r'\n', " ", message)
+        message = re.sub(r'\\', "-", message)
+        display_command += ' "' + message + '"'
     output = subprocess.check_call(display_command, shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
     if verbose:
         print(output)
@@ -60,7 +66,7 @@ if __name__ == "__main__":
                       help='Input PNG file', required=True)
     args = args.parse_args()
 
-    png_to_display(
+    send_png_to_display(
         verbose=args.verbose,
         input_file=args.input_file,
     )

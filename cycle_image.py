@@ -30,7 +30,7 @@
 # sudo ln -s ~/Documents/epaper_frame/cycle_image.service /etc/systemd/system/
 # sudo systemctl enable cycle_image.service
 
-import argparse, os, re, sys
+import argparse, os, re, sys, random
 import subprocess
 from send_png_to_display import send_png_to_display
 from datetime import *
@@ -80,7 +80,11 @@ def cycle_image(verbose=False, specific_id=None):
             last_display_datetime = datetime.utcfromtimestamp(status['last_display'])
             print("Last run at %s." % (pretty_datetime(last_display_datetime)))
 
-    chosen_image = images[2]
+    chosen_image = None
+    if len(images) > 0:
+        chosen_index = random.randint(0, int(len(images) / 2))
+        chosen_image = images[chosen_index]
+
     if verbose:
         print("Chose image %s/%s." % (chosen_image['group_name'], chosen_image['filename']))
         if chosen_image['last_display'] is None:

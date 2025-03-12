@@ -80,7 +80,7 @@ def create_tables_if_missing(conn, verbose):
             size REAL NOT NULL,
             file_modified_time REAL NOT NULL,
             last_display REAL,
-            display_count INTEGER NOT NULL,
+            display_count INTEGER NOT NULL DEFAULT 0,
             creation_time REAL NOT NULL,
             removed BOOLEAN NOT NULL DEFAULT FALSE
         )""")
@@ -88,6 +88,11 @@ def create_tables_if_missing(conn, verbose):
     conn.execute("""
         CREATE INDEX IF NOT EXISTS images_last_display
             ON "images" (last_display);
+        """)
+
+    conn.execute("""
+        CREATE INDEX IF NOT EXISTS images_display_count
+            ON "images" (display_count);
         """)
 
     conn.execute("""
@@ -257,7 +262,7 @@ def get_all_images(cur, verbose):
             display_count,
             creation_time,
             removed
-        FROM images ORDER BY last_display""")
+        FROM images ORDER BY display_count ASC""")
     rows = cur.fetchall()
     records = []
     for row in rows:

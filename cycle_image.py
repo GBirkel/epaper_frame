@@ -122,10 +122,15 @@ def cycle_image(verbose=False, specific_id=None):
 
     if battery_charging_status == True:
         if verbose:
-            print("PiSugar 3 battery is charging.  Will remain powered on.")
+            print("PiSugar 3 battery is charging.  Will remain powered on and enable wifi.")
+
+        subprocess.check_call("sudo iwconfig wlan0 txpower on", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
+
     else:
         if verbose:
-            print("On battery power.  Will power down automatically.")
+            print("On battery power.  Will disable wifi and power down automatically.")
+
+        subprocess.check_call("sudo iwconfig wlan0 txpower off", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
 
         if piSugarBattery.set_alarm_for_seconds_from_now(int(config['interval'])) == False:
             print("Failed to set new wakeup time in PiSugar 3!")

@@ -55,6 +55,15 @@ def cycle_image(verbose=False, specific_id=None):
     else:
         print("PiSugar 3 clock time: %s" % (real_time_clock.isoformat()))
 
+    alarm_setting = piSugarBattery.get_alarm_timer()
+    if alarm_setting is None:
+        print("Error reading alarm time.")
+    else:
+        d = datetime.utcfromtimestamp(alarm_setting)
+        tz_utc = fancytzutc()
+        d = d.replace(tzinfo=tz_utc)
+        print("PiSugar 3 last alarm time: %s" % (d.isoformat()))
+
     config = read_config()
     if config is None:
         print('Error reading your config.xml file!')
@@ -118,12 +127,10 @@ def cycle_image(verbose=False, specific_id=None):
         if verbose:
             print("On battery power.  Will power down automatically.")
 
-        if piSugarBattery.set_alarm_for_seconds_from_now(180) == False:
+        if piSugarBattery.set_alarm_for_seconds_from_now(240) == False:
             print("Failed to set new wakeup time in PiSugar 3!")
 
-#    output = subprocess.check_call("sudo shutdown -P now", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
-#    if verbose:
-#        print(output)
+        subprocess.check_call("sudo shutdown -P now", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":

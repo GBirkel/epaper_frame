@@ -127,7 +127,7 @@ def cycle_image(verbose=False, specific_id=None):
         if verbose:
             print("On battery power.  Will power down automatically.")
 
-        if piSugarBattery.set_alarm_for_seconds_from_now(240) == False:
+        if piSugarBattery.set_alarm_for_seconds_from_now(int(config['interval'])) == False:
             print("Failed to set new wakeup time in PiSugar 3!")
 
         subprocess.check_call("sudo shutdown -P now", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)

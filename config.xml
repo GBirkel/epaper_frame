@@ -3,4 +3,5 @@
     <installpath>/home/garote/Documents/epaper_frame/</installpath>
     <library>/home/garote/Pictures/frame/</library>
     <database>/home/garote/Documents/epaper_frame/images.db</database>
+    <interval>240</interval>
 </epaper>

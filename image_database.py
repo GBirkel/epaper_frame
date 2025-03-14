@@ -86,13 +86,13 @@ def create_tables_if_missing(conn, verbose):
         )""")
 
     conn.execute("""
-        CREATE INDEX IF NOT EXISTS images_last_display
-            ON "images" (last_display);
+        CREATE INDEX IF NOT EXISTS images_group_id
+            ON "images" (group_id);
         """)
 
     conn.execute("""
-        CREATE INDEX IF NOT EXISTS images_display_count
-            ON "images" (display_count);
+        CREATE INDEX IF NOT EXISTS images_last_display
+            ON "images" (last_display);
         """)
 
     conn.execute("""
@@ -104,7 +104,9 @@ def create_tables_if_missing(conn, verbose):
         CREATE TABLE IF NOT EXISTS image_display_history (
             id INTEGER PRIMARY KEY NOT NULL,
             image_id INTEGER NOT NULL,
-            display_time REAL
+            display_time REAL,
+            charging BOOLEAN NOT NULL,
+            charge_level INTEGER
         )""")
 
     conn.execute("""
@@ -282,7 +284,7 @@ def get_all_images(cur, verbose):
     return records
 
 
-def report_image_as_displayed(cur, verbose, image_id):
+def report_image_as_displayed(cur, verbose, image_id, charging, charge_level):
     """ update the record for an image showing that it was the one most recently displayed,
     and make a history entry for the event as well.
     :param cur: database cursor
@@ -295,7 +297,9 @@ def report_image_as_displayed(cur, verbose, image_id):
         "last_display": current_date
     }
     cur.execute("UPDATE images SET last_display = :last_display, display_count = display_count+1 WHERE id = :id", data)
-    cur.execute("INSERT INTO image_display_history (image_id, display_time) VALUES (?, ?)", (image_id, current_date))
+    cur.execute("""INSERT INTO image_display_history
+        (image_id, display_time, charging, charge_level)
+        VALUES (?, ?, ?, ?)""", (image_id, current_date, charging, charge_level))
 
 
 def finish_with_database(conn, cur):

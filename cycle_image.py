@@ -104,6 +104,7 @@ def cycle_image(verbose=False, specific_id=None):
 
     image_path = os.path.join(config['library'], chosen_image['group_name'], chosen_image['filename'])
 
+    capacity = None
     message = None
     if battery_charging_status is not None:
         capacity = piSugarBattery.refine_capacity()
@@ -112,7 +113,7 @@ def cycle_image(verbose=False, specific_id=None):
             print("PiSugar 3 battery second reading: %2i%%." % (capacity))
 
     send_png_to_display(verbose, image_path, message)
-    report_image_as_displayed(cur, verbose, chosen_image['id'])
+    report_image_as_displayed(cur, verbose, chosen_image['id'], battery_charging_status, capacity)
 
     current_date = calendar.timegm(datetime.utcnow().utctimetuple())
     status['last_display'] = current_date
@@ -120,16 +121,19 @@ def cycle_image(verbose=False, specific_id=None):
 
     finish_with_database(conn, cur)
 
-    if battery_charging_status == True:
+    if battery_charging_status is None:
+        if verbose:
+            print("PiSugar 3 battery status is undetermined.  Will remain powered on and enable wifi.")
+        subprocess.check_call("sudo iwconfig wlan0 txpower on", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
+
+    elif battery_charging_status == True:
         if verbose:
             print("PiSugar 3 battery is charging.  Will remain powered on and enable wifi.")
-
         subprocess.check_call("sudo iwconfig wlan0 txpower on", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
 
     else:
         if verbose:
             print("On battery power.  Will disable wifi and power down automatically.")
-
         subprocess.check_call("sudo iwconfig wlan0 txpower off", shell=True, stdout=sys.stdout, stderr=subprocess.STDOUT)
 
         if piSugarBattery.set_alarm_for_seconds_from_now(int(config['interval'])) == False:

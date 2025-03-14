@@ -27,7 +27,6 @@
 # Copyright (c) 2025 Garrett Birkel
 
 import argparse, os, re, sys
-import subprocess
 from common_utils import *
 from image_database import *
 

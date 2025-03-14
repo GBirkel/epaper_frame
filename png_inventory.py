@@ -31,13 +31,13 @@ from common_utils import *
 from image_database import *
 
 
-def png_inventory(verbose=False, library_path=None, database_path=None):
+def png_inventory(verbose=False, library_path=None, database_file=None):
 
     conn = None
     cur = None
 
     # create a database connection
-    conn = connect_to_local_db(database_path, verbose)
+    conn = connect_to_local_db(database_file, verbose)
     if not conn:
         print("Database could not be opened")
         os._exit(os.EX_IOERR)
@@ -101,8 +101,9 @@ if __name__ == "__main__":
                       help='Path to library', required=False)
     args = args.parse_args()
 
+    database_file = os.path.join(config['installpath'], 'images.db')
     png_inventory(
         verbose=args.verbose,
         library_path=args.library_path,
-        database_path=config['database']
+        database_file=database_file
     )

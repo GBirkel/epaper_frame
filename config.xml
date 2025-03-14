@@ -2,6 +2,6 @@
 <epaper>
     <installpath>/home/garote/Documents/epaper_frame/</installpath>
     <library>/home/garote/Pictures/frame/</library>
-    <database>/home/garote/Documents/epaper_frame/images.db</database>
-    <interval>240</interval>
+    <displaynumber>-1.23</displaynumber>
+    <interval>86310</interval>
 </epaper>

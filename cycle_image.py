@@ -73,7 +73,8 @@ def cycle_image(verbose=False, specific_id=None):
     cur = None
 
     # create a database connection
-    conn = connect_to_local_db(config['database'], verbose)
+    database_file = os.path.join(config['installpath'], 'images.db')
+    conn = connect_to_local_db(database_file, verbose)
     if not conn:
         print("Database could not be opened")
         os._exit(os.EX_IOERR)

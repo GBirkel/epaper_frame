@@ -46,7 +46,7 @@ def send_png_to_display(verbose=False, input_file=None, message=None):
     )
 
     command_path = os.path.join( config['installpath'], "IT8951_Utility/it8951utility" )
-    display_command = command_path + " -1.23 1 /var/tmp/to_display.bmp"
+    display_command = command_path + " " + config['displaynumber'] + " 1 /var/tmp/to_display.bmp"
     if message is not None:
         message = message[0:80]
         message = re.sub(r'"', "'", message)

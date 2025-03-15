@@ -2,6 +2,10 @@
 
 ### A project to build a nice 10.3-inch grayscale e-paper picture frame that updates once a day.
 
+
+
+For years I've been intrigued by the unique aesthetics of e-paper displays.  A changeable surface that doesn't emit any light, and can display a static image perpetually?  Wouldn't this kind of display be great for showing art?
+
 ## Parts list:
 
 <img src="documentation/pizero2wh.png" style="width:50%;max-width:256px;" />
@@ -55,15 +59,32 @@
 * Matting: 1" Smooth Black (White Core)
 * Cover: Clear Acrylic
 
-### [Right-angle USB-C extension cord](https://www.amazon.com/dp/B0BZBRG92Z)
+<img src="documentation/usbc_cable.png" style="width:50%;max-width:256px;" />
 
+### [Right-angle USB-C extension cord](https://www.amazon.com/dp/B0BZBRG92Z)
 * 0.3 meters
 * Makes it much easier to charge the battery
 
+<img src="documentation/wire_caps.png" style="width:50%;max-width:256px;" />
+
 ### [A heap of wire caps and a crimping tool](https://www.amazon.com/dp/B0CYNYJTKD)
-* No soldering needed
-* Way too many for this project
+* No soldering in this project
+* Way more than I need, but oh well
+
+<img src="documentation/jumper_cables.png" style="width:50%;max-width:256px;" />
 
 ### [A pile of short breadboard jumper wires](https://www.amazon.com/dp/B0CNXLLNGN?th=1)
 * No soldering needed
-* Way too many for this project
+* Way too many for this project, but I guess I have spares now
+
+## You will also need:
+
+* Some tape
+* An x-acto knife or similar very sharp thing
+* A slotted screwdriver
+* __A Dremel tool or other means of grinding down metallic material!__
+
+As the instructions below will show, the display board that comes with the e-ink display has a giant connector and pins on it that you don't need, but that add a lot of thickness.  To make the component fit nearly behind the frame you're going to need to _grind these things down to stumps!_  It is satisfyingly violent.
+
+You can skip that step if you want, but you'll need a thicker frame, or it won't hang flat on a wall.  That might not bother you either, though, if you plan to prop the frame on a desk or nightstand.
+

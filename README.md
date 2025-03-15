@@ -2,7 +2,7 @@
 
 ### A project to build a nice 10.3-inch grayscale e-paper picture frame that updates once a day.
 
-![Video of the frame in action, with cat for size](https://github.com/user-attachments/assets/95cea70d-8090-42fa-a7ea-d0496e093b6a)
+![Video of the frame in action, with cat for size](https://github.com/user-attachments/assets/2f5732ef-21fd-4f81-a468-279e1d1b35e0)
 
 For years I've been intrigued by the unique aesthetics of e-paper displays.  A changeable surface that doesn't emit any light, and can display a static image without power?  Wouldn't this be great for showing art?
 

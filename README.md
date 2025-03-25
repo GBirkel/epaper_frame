@@ -41,6 +41,14 @@ There are two additional things I might add here, depending on the direction I w
 
 For now, I just have over a thousand images dumped directly onto the microSD card.  It'll take three years or so to run through them, so there's no hurry to decide which of the above approaches to take...
 
-* [Materials List](documentation/materials.md)
-* [Construction And Wiring](documentation/construction.md)
-* [Software](documentation/software.md)
+The following sections give a pretty thorough walkthrough of how this frame was assembled, wired, and programmed:
+
+## [Materials List](documentation/materials.md)
+
+## [Construction And Wiring](documentation/construction.md)
+
+## [Software](documentation/software.md)
+
+Hopefully this will inspire your own e-paper project!  If so, I'd love to hear about it.
+
+Happy hacking!

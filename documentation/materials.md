@@ -1,4 +1,4 @@
-# Fancy e-ink photo frame
+# Fancy e-paper photo frame
 
 ### A project to build a nice 10.3-inch grayscale e-paper picture frame that updates once a day.
 
@@ -85,7 +85,7 @@
 * A slotted screwdriver
 * __A Dremel tool or other means of grinding down metallic material!__ (optional)
 
-As the instructions below will show, the display board that comes with the e-ink display has a giant connector and pins on it that you don't need, but that add a lot of thickness.  To make the component fit nearly behind the frame you're going to need to _grind these things down to stumps!_  It is satisfyingly violent.
+As the instructions below will show, the display board that comes with the e-paper display has a giant connector and pins on it that you don't need, but that add a lot of thickness.  To make the component fit nearly behind the frame you're going to need to _grind these things down to stumps!_  It is satisfyingly violent.
 
 You can skip that step if you want, but you'll need a thicker frame, or it won't hang flat on a wall.  That might not bother you either, though, if you plan to prop the frame on a desk or nightstand.
 

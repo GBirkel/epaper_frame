@@ -82,7 +82,7 @@ Here's a demonstration of this working, using a [mini black hat hack3r](https://
 
 <a data-flickr-embed="true" href="https://www.flickr.com/photos/57897385@N07/54371682401/in/dateposted/" title="2025-02-17-192046-IMG_6005"><img src="https://live.staticflickr.com/65535/54371682401_3d5b2ed680_z.jpg" style="width:70%;max-width:512px;" alt="2025-02-17-192046-IMG_6005"/></a>
 
-Now, a couple of the wires used by the e-paper driver board overlap with the PiSugar 3.  You're going to need three of those small crimp-on connectors to join them together when you wire everything up:
+Now, a couple of the wires used by the e-paper driver board overlap with the PiSugar 3.  You're going to need four of those small crimp-on connectors to join them together when you wire everything up:
 
 <a data-flickr-embed="true" href="https://www.flickr.com/photos/57897385@N07/54371888739/in/dateposted/" title="2025-02-23-231851-IMG_6033"><img src="https://live.staticflickr.com/65535/54371888739_afec53a2a6_z.jpg" style="width:70%;max-width:512px;" alt="2025-02-23-231851-IMG_6033"/></a>
 

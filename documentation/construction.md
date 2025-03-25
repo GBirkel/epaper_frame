@@ -1,4 +1,4 @@
-# Fancy e-ink photo frame
+# Fancy e-paper photo frame
 
 ### A project to build a nice 10.3-inch grayscale e-paper picture frame that updates once a day.
 
@@ -146,6 +146,21 @@ And that's all it takes to assemble this project.
 
 ### Wiring
 
+This is definitely the trickiest part of the project.
+
+Some initial advice:  Make sure your display board is in SPI mode, because we're going to be using the SPI port.  Check for a switch on it!
+
+<img src="display_hat-switch.png" style="width:50%;max-width:512px;" />
+
+The diagram below shows what connections to make with your jumper wires.  Note there are four places where you'll need to join wires with the crimping tool.  Two of those places involve joining four wires.
+
+<img src="ugly_wiring_diagram.png" style="width:90%;max-width:1280px;" />
+
+I found these two diagrams helpful while I figured this out.  These are two alternate ways of labeling the IO port on your Raspberry Pi.  The first is known as "BCM numbering".
+
+<img src="pi_gpio_ports-bcm_numbering.png" style="width:85%;max-width:640px;" />
+
+<img src="pi_gpio_ports.png" style="width:85%;max-width:640px;" />
 
 Continue to:
 

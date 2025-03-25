@@ -30,6 +30,8 @@ There are two support scripts included as well:
 * `png_inventory.py` scans through a collection of image folders for PNG files, and adds any that are new to the database.
 * `register_service.py` can be used to register the script to be automatically launched when the Raspberry Pi is powered up, and to unregister it if necessary.
 
+<a data-flickr-embed="true" href="https://www.flickr.com/photos/57897385@N07/54408811594/in/dateposted/" title="An e-paper frame showing a rather obscure reference"><img src="https://live.staticflickr.com/65535/54408811594_48a7f047ac_z.jpg" style="width:70%;max-width:512px;" alt="An e-paper frame showing a rather obscure reference"/></a>
+
 ### Future plans:
 
 There are two additional things I might add here, depending on the direction I want to go:

@@ -9,7 +9,7 @@
 
 # Software:
 
-This section assumes you've already got your Raspberry Pi booting in to an OS on the media card, and can `ssh` into it.  Check the [Construction](construction.md) section for details on using [Raspberry Pi OS imager](https://www.raspberrypi.com/software/).
+This section assumes you've already got your Raspberry Pi booting in to an OS on the media card, and can `ssh` into it.  Check the [Construction](construction.md) section for details on using the [Raspberry Pi OS imager](https://www.raspberrypi.com/software/).
 
 Here's a list of commands I entered to customize the system and get it ready.  You may not need all of these.
 
@@ -37,6 +37,8 @@ In the editor, change the configuration file to make home directories writable, 
 sudo smbpasswd -a garote
 sudo /etc/init.d/smbd restart
 ```
+Swap `garote` for your username, of course.
+
 At this point, if your computer is on the same wifi network, the Pi will magically appear as a file server in the network section.  Log in using your admin credentials.
 
 ### Installing and updating the PiSugar driver:
